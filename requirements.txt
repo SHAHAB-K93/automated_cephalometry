@@ -1,0 +1,9 @@
+
+tensorflow>=2.8.0
+numpy
+pandas
+opencv-python
+matplotlib
+scikit-learn
+scipy
+jupyter
