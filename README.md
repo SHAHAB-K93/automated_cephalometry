@@ -21,7 +21,7 @@ The goal is to improve diagnostic accuracy, reduce manual workload, and enhance 
 
 ```
 cephalometric-landmark-detection/
-├── dice_loss_cephalometric_landmarks.ipynb     # Main Jupyter Notebook
+├── source_code.ipynb     # Main Jupyter Notebook
 ├── new1200/
 │   ├── ceph400/                                # Cephalometric X-ray images
 │   ├── train_senior.csv                        # Landmark annotations (training set)
@@ -67,13 +67,9 @@ cd automated_cephalometry
 
 3. **Run the code (Jupyter):**
 ```bash
-jupyter notebook dice_loss_cephalometric_landmarks.ipynb
+jupyter notebook source_code.ipynb
 ```
 
-4. *(Optional)* Run with Python script (if converted):
-```bash
-python run_model.py
-```
 
 ---
 
