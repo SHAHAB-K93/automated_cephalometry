@@ -1,37 +1,36 @@
-
 # Cephalometric Landmark Detection using U-Net Architecture
 
-This repository contains the source code and a sample dataset for the paper:
+This repository provides the source code and sample dataset for the paper:
 
-  "Enhanced Automatic Detection of Cephalometric Landmarks in Pediatric Orthodontics using U-Net Architecture"  
+**"Enhanced Automatic Detection of Cephalometric Landmarks in Pediatric Orthodontics using U-Net Architecture"**
 
-📄   Citation:    
+📄 **Citation:**  
 If you use this code or dataset, please cite our work as described in the paper.
 
 ---
 
 ## 🔍 Overview
 
-This project presents a deep learning-based system for the automatic detection of cephalometric landmarks in growing patients using a U-Net architecture. The model is trained and evaluated on 1200 lateral cephalometric radiographs annotated by expert orthodontists.
+This project introduces a deep learning-based system based on a customized U-Net model for automatic detection of cephalometric landmarks in pediatric orthodontics. The model is trained on 1200 lateral cephalometric radiographs annotated by expert orthodontists.
 
-The proposed method improves diagnostic accuracy, reduces manual workload, and enhances consistency in pediatric orthodontics.
+The goal is to improve diagnostic accuracy, reduce manual workload, and enhance consistency in orthodontic analysis of growing patients.
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-📂 cephalometric-landmark-detection/
-├── dice-loss-cephalometric-landmarks-detection (final2).ipynb   # Main Jupyter Notebook
+cephalometric-landmark-detection/
+├── dice_loss_cephalometric_landmarks.ipynb     # Main Jupyter Notebook
 ├── new1200/
-│   ├── ceph400/                       # Folder for cephalometric X-ray images
-│   ├── train_senior.csv              # CSV file with training landmark coordinates
-│   ├── test1_senior.csv              # CSV file with first test set
-│   └── test2_senior.csv              # CSV file with second test set
-├── landmark_correction_data.csv      # CSV file for post-processing correction adjustments
-├── New_test.jpg                      # A new sample image for testing
-└── README.md                         # Instructions and guidelines
-
+│   ├── ceph400/                                # Cephalometric X-ray images
+│   ├── train_senior.csv                        # Landmark annotations (training set)
+│   ├── test1_senior.csv                        # Test set 1
+│   └── test2_senior.csv                        # Test set 2
+├── initial_model_predictions.csv               # Predicted landmarks (before correction)
+├── adjusted_model_predictions.csv              # Predicted landmarks (after correction)
+├── New_test.jpg                                # Sample image
+└── README.md
 ```
 
 ---
@@ -47,7 +46,7 @@ The proposed method improves diagnostic accuracy, reduces manual workload, and e
 - Scikit-learn
 - SciPy
 
-Install all dependencies using:
+Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
@@ -56,87 +55,74 @@ pip install -r requirements.txt
 
 ## 🚀 How to Use
 
-### 1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/SHAHAB-K93/automated_cephalometry.git
 cd automated_cephalometry
 ```
 
-### 2. Prepare dataset:
-- Place your X-ray images in `new1200/ceph400/ceph400/`
-- Provide landmark annotations in `new1200/train_senior.csv` with headers: `Image_Name, 1_x, 1_y, 2_x ,2_y ...`
-- A clearer example might be: "Image_Name, 1_x, 1_y, 2_x, 2_y, ... where 1_x and 1_y represent the x and y coordinates of the first landmark (e.g., Sella)."
+2. **Prepare the dataset:**
+- Place X-ray images in `new1200/ceph400/`
+- Annotation format in CSV: `Image_Name, 1_x, 1_y, 2_x ,2_y ...`
 
-### 3. Run the code:
-Open the Jupyter Notebook:
+3. **Run the code (Jupyter):**
 ```bash
-jupyter notebook dice-loss-cephalometric-landmarks-detection (final2).ipynb
+jupyter notebook dice_loss_cephalometric_landmarks.ipynb
+```
+
+4. *(Optional)* Run with Python script (if converted):
+```bash
+python run_model.py
 ```
 
 ---
 
-## 📑 Code Breakdown
+## 📑 Code Description
 
-### 🔹 Data Loading & Preprocessing
-- Load landmark coordinates from CSV
-- Generate binary masks for each landmark (circle radius = 4 pixels)
-- Apply Gaussian filter for smoothing masks
-- Resize input images and masks to 256x256 pixels
+### 🔹 **Data Loading & Preprocessing**
+- Load coordinates from CSV
+- Generate landmark masks (radius = 4 px)
+- Gaussian filtering
+- Resize images/masks (256x256)
 
-### 🔹 U-Net Model Architecture
-- Contracting Path (Encoder): series of Conv2D, BatchNorm, ReLU, MaxPooling, Dropout
-- Expanding Path (Decoder): Conv2DTranspose layers with skip connections from encoder
-- Final layer: 1x1 Conv2D for output mask prediction
+### 🔹 **U-Net Architecture**
+- Encoder: Conv2D, BatchNorm, ReLU, MaxPooling
+- Decoder: Conv2DTranspose with skip-connections
+- Final layer: 1x1 Conv2D
 
-### 🔹 Training
--   Loss function:   Dice Loss
--   Optimizer:   Adam (lr=0.001)
--   Epochs:   400,   Batch size:   16
--   Metrics:   Dice Coefficient, MAE, RMSE, Precision, Accuracy
+### 🔹 **Model Training**
+- Loss: Dice Loss
+- Optimizer: Adam (lr=0.001)
+- Epochs: 400 | Batch Size: 16 | Metric: Dice Coefficient
 
-### 🔹 Post-processing & Correction
-- Landmarks predicted from heatmaps (maximum value per channel)
-- Standardization using distance between Sella (S) and Nasion (Na) landmarks for each image.
-- Post-prediction corrections using an average offset derived from the training data to improve accuracy.
-
-### 🔹 Evaluation
-- Euclidean distance error calculation
-- Convert pixel distances to millimeters based on the cephalometric ruler scale in landmark_correction_data.csv.
-- Compare performance before and after adjustment.
-
----
-
-## 📊 Results Summary
-
-| Metric     | Before Adjustment | After Adjustment |
-|------------|-------------------|------------------|
-| Mean Error | 1.28 ± 1.44 mm    | 0.45 ± 0.50 mm   |
-| Accuracy   | Up to 0.99        | Up to 0.99       |
-| Processing Time | 0.49 sec/image | 0.49 sec/image   |
+### 🔹 **Post-processing**
+- Predicted landmarks from heatmaps (peak points)
+- Normalization based on Sella–Nasion (SN_Length) distance
+- Correction using average offset per landmark
 
 ---
 
 ## 📂 Dataset & Code Access
 
--   Code:   Included in this repository
--   Sample Dataset:   `new1200/` directory
+- **Code:** Included in this repository
+- **Sample Dataset:** `/new1200/`
+- **DOI:** https://doi.org/10.5281/zenodo.15020583
 
-Note: Full dataset not public due to privacy restrictions. A sample dataset is included for demonstration purposes.
+(*Trained weights can be provided upon request.*)
 
 ---
 
 ## 📌 Notes
 
-- All coordinates in landmark_correction_data.csv are normalized relative to S-N line (Sella-Nasion) of each patient.
-- Post-prediction corrections improve precision
-- Designed specifically for pediatric orthodontics and growing patients
+- All coordinates normalized relative to SN length
+- Post-correction significantly improves prediction accuracy
+- Optimized for pediatric orthodontics
 
 ---
 
 ## ✉ Contact
 
-  Dr. Shahab Kavousinejad    
-Department of Orthodontics, School of Dentistry, Shahid Beheshti University of Medical Sciences, Tehran, Iran  
-📧 dr.shahab.k93@gmail.com
-
-(on behalf of all authors)
+**Dr. Shahab Kavousinejad**  
+Department of Orthodontics, School of Dentistry, Shahid Beheshti University of Medical Sciences  
+📧 dr.shahab.k93@gmail.com  
+*(On behalf of all co-authors)*
